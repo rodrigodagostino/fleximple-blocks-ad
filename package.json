@@ -24,10 +24,15 @@
 		"makejson": "wp i18n make-json languages/fleximple-blocks-ad-es_ES.po --no-purge"
 	},
 	"devDependencies": {
+		"@types/react": "18.3.29",
+		"@wordpress/eslint-plugin": "25.2.0",
 		"@wordpress/scripts": "32.2.0",
 		"array-move": "4.0.0",
+		"eslint-config-prettier": "10.1.8",
+		"eslint-plugin-prettier": "5.5.5",
 		"lodash.times": "4.3.2",
-		"memize": "2.1.1"
+		"memize": "2.1.1",
+		"prettier": "3.8.3"
 	},
 	"dependencies": {
 		"fleximple-components": "file:../fleximple-components"
