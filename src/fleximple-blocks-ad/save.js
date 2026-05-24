@@ -1,21 +1,63 @@
+/* global fleximpleblocksPluginData */
+import { useBlockProps } from '@wordpress/block-editor';
 import { getBlockDefaultClassName } from '@wordpress/blocks';
-import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 
 import metadata from './block.json';
 import InlineStyles from './inline-styles';
 
 const { name } = metadata;
 
-function AdSave({ attributes, attributes: { blockId, attr1, attr2, attr3 } }) {
+function AdSave({ attributes, attributes: { blockId, id, url, alt, linkUrl, linkTarget } }) {
 	const defaultClassName = getBlockDefaultClassName(name);
 
-	const blockProps = useBlockProps.save();
+	const pictureSources = [];
+	// The generated array needs to be reversed in order for <source>
+	// to work properly (from largest to smallest).
+	Object.entries(id)
+		.reverse()
+		.forEach(([key, value], index, array) => {
+			if (value) {
+				pictureSources.push(
+					<source
+						className={`${defaultClassName}__source`}
+						// Assign the closest lower breakpoint
+						// (“small” shouldn’t have a media attribute).
+						media={
+							key !== 'small'
+								? `(min-width: ${
+										fleximpleblocksPluginData.settings[array[index + 1][0] + 'BreakpointValue']
+									}px)`
+								: null
+						}
+						srcSet={url[key]}
+					/>
+				);
+			}
+		});
+
+	const imageSource = url.small ? url.small : null;
 
 	return (
-		<div {...blockProps} data-block-id={blockId}>
-			<InnerBlocks.Content />
+		<picture {...useBlockProps.save()} data-block-id={blockId}>
+			{(!!id.small || !!id.medium || !!id.large) && (
+				<>
+					{pictureSources}
+					<img className={`${defaultClassName}__image`} src={imageSource} alt={alt} />
+					{!!linkUrl && (
+						<a
+							className={`${defaultClassName}__link`}
+							href={linkUrl}
+							target={linkTarget}
+							rel="noopener"
+						>
+							<span className="screen-reader-only">{alt}</span>
+						</a>
+					)}
+				</>
+			)}
+
 			<InlineStyles {...{ defaultClassName, attributes }} />
-		</div>
+		</picture>
 	);
 }
 

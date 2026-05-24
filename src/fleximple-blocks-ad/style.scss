@@ -1,2 +1,22 @@
+$default-class-name: "fleximple-blocks-ad";
+
 .fleximple-blocks-ad {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: relative;
+
+	&:empty {
+		display: none;
+	}
+
+	&__image {
+		max-width: 100%;
+	}
+
+	&__link {
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+	}
 }

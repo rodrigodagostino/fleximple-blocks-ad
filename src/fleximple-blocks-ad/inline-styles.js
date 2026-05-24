@@ -1,16 +1,24 @@
 /* global fleximpleblocksPluginData */
-const InlineStyles = ({ defaultClassName, attributes: { blockId, attr1, attr2, attr3 } }) => {
-	const blockSelector = `.${defaultClassName}[data-block="${blockId}"]`;
+const InlineStyles = ({ defaultClassName, attributes: { blockId, width } }) => {
+	const blockSelector = `.${defaultClassName}[data-block-id="${blockId}"]`;
 
 	return (
 		<style>
-			{`${blockSelector} {}`}
+			{`${blockSelector} .${defaultClassName}__image {
+        width: ${width.small === 'full' ? '100%' : 'auto'};
+      }`}
 
-			{`@media only screen and (min-width: ${fleximpleblocksPluginData.settings.smallBreakpointValue}px) {}`}
+			{`@media only screen and (min-width: ${fleximpleblocksPluginData.settings.mediumBreakpointValue}px) {
+          ${blockSelector} .${defaultClassName}__image {
+            width: ${width.medium === 'full' ? '100%' : 'auto'};
+          }
+        }`}
 
-			{`@media only screen and (min-width: ${fleximpleblocksPluginData.settings.mediumBreakpointValue}px) {}`}
-
-			{`@media only screen and (min-width: ${fleximpleblocksPluginData.settings.largeBreakpointValue}px) {}`}
+			{`@media only screen and (min-width: ${fleximpleblocksPluginData.settings.largeBreakpointValue}px) {
+          ${blockSelector} .${defaultClassName}__image {
+            width: ${width.large === 'full' ? '100%' : 'auto'};
+          }
+        }`}
 		</style>
 	);
 };
