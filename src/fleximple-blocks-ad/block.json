@@ -1,0 +1,34 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "fleximple-blocks/ad",
+	"version": "0.1.0",
+	"title": "Ad",
+	"category": "fleximple-blocks",
+	"description": "Display an ad that can switch to different versions depending on the screen size.",
+	"attributes": {
+		"blockId": {
+			"type": "string",
+			"default": null
+		},
+		"attr1": {
+			"type": "string",
+			"default": "Attribute 1"
+		},
+		"attr2": {
+			"type": "string",
+			"default": "Attribute 2"
+		},
+		"attr3": {
+			"type": "string",
+			"default": "Attribute 3"
+		}
+	},
+	"supports": {
+		"html": false
+	},
+	"textdomain": "fleximple-blocks-ad",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css"
+}

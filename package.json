@@ -1,0 +1,35 @@
+{
+	"name": "fleximple-blocks-ad",
+	"version": "0.1.0",
+	"description": "A Gutenberg block that displays a specific post or page.",
+	"author": "Rodrigo D’Agostino <rodrigo.dagostino@proton.me>",
+	"license": "GPL-2.0-or-later",
+	"main": "build/index.js",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/rodrigodagostino/fleximple-blocks-ad.git"
+	},
+	"scripts": {
+		"build": "wp-scripts build --webpack-copy-php --blocks-manifest",
+		"format": "wp-scripts format",
+		"lint:css": "wp-scripts lint-style",
+		"lint:js": "wp-scripts lint-js",
+		"packages-update": "wp-scripts packages-update",
+		"plugin-zip": "wp-scripts plugin-zip",
+		"start": "wp-scripts start --webpack-copy-php --blocks-manifest",
+		"makepot": "wp i18n make-pot . languages/fleximple-blocks-ad.pot",
+		"makepo": "cp languages/fleximple-blocks-ad.pot languages/fleximple-blocks-ad-es_ES.po",
+		"updatepo": "wp i18n update-po languages/fleximple-blocks-ad-es_ES.po",
+		"makemo": "wp i18n make-mo languages/fleximple-blocks-ad-es_ES.po",
+		"makejson": "wp i18n make-json languages/fleximple-blocks-ad-es_ES.po --no-purge"
+	},
+	"devDependencies": {
+		"@wordpress/scripts": "32.2.0",
+		"array-move": "4.0.0",
+		"lodash.times": "4.3.2",
+		"memize": "2.1.1"
+	},
+	"dependencies": {
+		"fleximple-components": "file:../fleximple-components"
+	}
+}
