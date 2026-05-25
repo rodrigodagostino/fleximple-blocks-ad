@@ -1,3 +1,14 @@
 .fleximple-blocks-ad {
 	margin: 0;
 }
+
+.button-media {
+	height: auto;
+	padding: 0 !important;
+
+	img,
+	video {
+		width: 100%;
+		min-height: 2.5rem;
+	}
+}

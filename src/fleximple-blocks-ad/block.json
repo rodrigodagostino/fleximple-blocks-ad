@@ -19,6 +19,22 @@
 				"large": null
 			}
 		},
+		"type": {
+			"type": "object",
+			"default": {
+				"small": null,
+				"medium": null,
+				"large": null
+			}
+		},
+		"subtype": {
+			"type": "object",
+			"default": {
+				"small": null,
+				"medium": null,
+				"large": null
+			}
+		},
 		"url": {
 			"type": "object",
 			"default": {

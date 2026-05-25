@@ -2,7 +2,7 @@
 
 /**
  * Plugin Name:       Fleximple Blocks: Ad
- * Description:       Do something in particular.
+ * Description:       Display an ad that can switch to different versions depending on the screen size.
  * Version:           1.0.0
  * Requires at least: 6.7
  * Requires PHP:      7.4

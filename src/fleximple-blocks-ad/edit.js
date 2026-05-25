@@ -1,4 +1,3 @@
-/* global fleximpleblocksPluginData */
 import { useEffect, useState } from 'react';
 import { __ } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
@@ -32,7 +31,7 @@ const ALLOWED_MEDIA_TYPES = ['image', 'video'];
 
 export default function AdEdit({
 	attributes,
-	attributes: { blockId, id, url, size, width, alt, linkUrl, linkTarget },
+	attributes: { blockId, id, type, subtype, url, size, width, alt, linkUrl, linkTarget },
 	setAttributes,
 	clientId,
 }) {
@@ -64,8 +63,9 @@ export default function AdEdit({
 					return {
 						[key]: {
 							id: response.id,
-							sizes: response.media_details.sizes,
+							...(response.media_type === 'image' && { sizes: response.media_details.sizes }),
 							type: response.media_type,
+							subtype: response.mime_type.split('/')[1],
 							alt: response.alt_text,
 						},
 					};
@@ -84,34 +84,58 @@ export default function AdEdit({
 
 	const blockProps = useBlockProps();
 
-	const pictureSources = [];
-	if (mediaData) {
-		// The generated array needs to be reversed
-		// in order for <source> to work properly (from largest to smallest).
-		Object.entries(id)
-			.reverse()
-			.forEach(([key, value], index, array) => {
-				if (value) {
-					pictureSources.push(
-						<source
-							className={`${defaultClassName}__source`}
-							// Assign the closest lower breakpoint
-							// (“small” shouldn’t have a media attribute).
-							media={
-								key !== 'small'
-									? `(min-width: ${
-											fleximpleblocksPluginData.settings[array[index + 1][0] + 'BreakpointValue']
-										}px)`
-									: null
-							}
-							srcSet={url[key]}
+	function MediaPlaceholder() {
+		return (
+			<>
+				{!id.small && !id.medium && !id.large && (
+					<Placeholder
+						icon={icon}
+						label={__('Ad', 'fleximple-blocks-ad')}
+						className="fleximple-components-placeholder"
+						instructions={__('Select a media element to start with.', 'fleximple-blocks-ad')}
+					>
+						<MediaUpload
+							id={`fleximple-blocks-container-media-control-${instanceId}`}
+							onSelect={(media) => {
+								setResponsiveAttribute(attributes, setAttributes, 'id', 'small', media.id);
+								setResponsiveAttribute(attributes, setAttributes, 'type', 'small', media.type);
+								setResponsiveAttribute(
+									attributes,
+									setAttributes,
+									'subtype',
+									'small',
+									media.subtype
+								);
+								setResponsiveAttribute(
+									attributes,
+									setAttributes,
+									'url',
+									'small',
+									media.sizes[size.small].url
+								);
+								setAttributes({ alt: media.alt });
+							}}
+							allowedTypes={ALLOWED_MEDIA_TYPES}
+							value={id}
+							render={({ open }) => (
+								<>
+									<Button
+										className="button button-large is-button is-primary width-full"
+										style={{ marginTop: '10px' }}
+										onClick={open}
+									>
+										{!id.small
+											? __('Choose media', 'fleximple-blocks-ad')
+											: __('Replace media', 'fleximple-blocks-ad')}
+									</Button>
+								</>
+							)}
 						/>
-					);
-				}
-			});
+					</Placeholder>
+				)}
+			</>
+		);
 	}
-
-	const imageSource = url.small ? url.small : null;
 
 	return (
 		<>
@@ -122,7 +146,7 @@ export default function AdEdit({
 							{(tab) => (
 								<>
 									<BaseControl
-										label={__('Image', 'fleximple-blocks-ad')}
+										label={__('Media', 'fleximple-blocks-ad')}
 										id={`fleximple-blocks-container-media-control-${instanceId}`}
 									>
 										<MediaUploadCheck>
@@ -139,9 +163,25 @@ export default function AdEdit({
 													setResponsiveAttribute(
 														attributes,
 														setAttributes,
+														'type',
+														tab.name,
+														media.type
+													);
+													setResponsiveAttribute(
+														attributes,
+														setAttributes,
+														'subtype',
+														tab.name,
+														media.subtype
+													);
+													const mediaUrl =
+														media.type === 'image' ? media.sizes[size[tab.name]].url : media.url;
+													setResponsiveAttribute(
+														attributes,
+														setAttributes,
 														'url',
 														tab.name,
-														media.sizes[size[tab.name]].url
+														mediaUrl
 													);
 													setAttributes({ alt: media.alt });
 													setMediaData({
@@ -154,17 +194,24 @@ export default function AdEdit({
 												render={({ open }) => (
 													<>
 														{!!id[tab.name] && (
-															<Button
-																className="button fleximple-components-button-image width-full"
-																onClick={open}
-															>
-																<img
-																	src={url[tab.name]}
-																	style={{
-																		verticalAlign: 'middle',
-																	}}
-																	alt={__('Replace image', 'fleximple-blocks-ad')}
-																/>
+															<Button className="button button-media width-full" onClick={open}>
+																{type[tab.name] === 'image' && (
+																	<img
+																		src={url[tab.name]}
+																		style={{ verticalAlign: 'middle' }}
+																		alt={__('Replace media', 'fleximple-blocks-ad')}
+																	/>
+																)}
+																{type[tab.name] === 'video' && (
+																	<video
+																		src={url[tab.name]}
+																		type={`video/${subtype[tab.name]}`}
+																		autoPlay
+																		loop
+																		muted
+																		style={{ verticalAlign: 'middle' }}
+																	/>
+																)}
 															</Button>
 														)}
 
@@ -174,8 +221,8 @@ export default function AdEdit({
 															onClick={open}
 														>
 															{!id[tab.name]
-																? __('Choose image', 'fleximple-blocks-ad')
-																: __('Replace image', 'fleximple-blocks-ad')}
+																? __('Choose media', 'fleximple-blocks-ad')
+																: __('Replace media', 'fleximple-blocks-ad')}
 														</Button>
 
 														{!!id[tab.name] && (
@@ -194,6 +241,20 @@ export default function AdEdit({
 																	setResponsiveAttribute(
 																		attributes,
 																		setAttributes,
+																		'type',
+																		tab.name,
+																		null
+																	);
+																	setResponsiveAttribute(
+																		attributes,
+																		setAttributes,
+																		'subtype',
+																		tab.name,
+																		null
+																	);
+																	setResponsiveAttribute(
+																		attributes,
+																		setAttributes,
 																		'url',
 																		tab.name,
 																		null
@@ -204,7 +265,7 @@ export default function AdEdit({
 																	});
 																}}
 															>
-																{__('Remove image', 'fleximple-blocks-ad')}
+																{__('Remove media', 'fleximple-blocks-ad')}
 															</Button>
 														)}
 													</>
@@ -233,7 +294,7 @@ export default function AdEdit({
 										/>
 									)}
 
-									{!!id[tab.name] && mediaData && (
+									{!!id[tab.name] && mediaData && type[tab.name] === 'image' && (
 										<SelectControl
 											label={__('Size', 'fleximple-blocks-ad')}
 											value={size[tab.name]}
@@ -298,55 +359,53 @@ export default function AdEdit({
 				</PanelBody>
 			</InspectorControls>
 
-			<picture {...blockProps} data-block-id={blockId}>
-				{!id.small && !id.medium && !id.large && (
-					<Placeholder
-						icon={icon}
-						label={__('Ad', 'fleximple-blocks-ad')}
-						className="fleximple-components-placeholder"
-						instructions={__('Select an image to start with.', 'fleximple-blocks-ad')}
-					>
-						<MediaUpload
-							id={`fleximple-blocks-container-media-control-${instanceId}`}
-							onSelect={(media) => {
-								setResponsiveAttribute(attributes, setAttributes, 'id', 'small', media.id);
-								setResponsiveAttribute(
-									attributes,
-									setAttributes,
-									'url',
-									'small',
-									media.sizes[size.small].url
-								);
-								setAttributes({ alt: media.alt });
-							}}
-							allowedTypes={ALLOWED_MEDIA_TYPES}
-							value={id}
-							render={({ open }) => (
-								<>
-									<Button
-										className="button button-large is-button is-primary width-full"
-										style={{ marginTop: '10px' }}
-										onClick={open}
-									>
-										{!id.small
-											? __('Choose image', 'fleximple-blocks-ad')
-											: __('Replace image', 'fleximple-blocks-ad')}
-									</Button>
-								</>
-							)}
-						/>
-					</Placeholder>
-				)}
+			<div className={defaultClassName} {...blockProps} data-block-id={blockId}>
+				<MediaPlaceholder />
+				{Object.entries(type).map(([key, value], index) => {
+					if (!value) return null;
 
-				{(!!id.small || !!id.medium || !!id.large) && (
-					<>
-						{pictureSources}
-						<img className={`${defaultClassName}__image`} src={imageSource} alt={alt} />
-					</>
-				)}
+					const breakpointKeys = Object.keys(type);
+					const breakpointValues = Object.values(type);
+					const afterNextBreakpoint = breakpointKeys[index + 2];
+					const hasNextBreakpoint = breakpointValues[index + 1];
+					const hasAfterNextBreakpoint = breakpointValues[index + 2];
+					const hasLargerBreakpoint = Boolean(hasNextBreakpoint || hasAfterNextBreakpoint);
 
+					const getElementClasses = (element) =>
+						[
+							`${defaultClassName}__${element}`,
+							...(hasLargerBreakpoint && hasNextBreakpoint ? [`${key}-only`] : []),
+							...(hasLargerBreakpoint && !hasNextBreakpoint && hasAfterNextBreakpoint
+								? [`${key}-until-${afterNextBreakpoint}`]
+								: []),
+							...(!hasLargerBreakpoint ? [`${key}-and-above`] : []),
+						].join(' ');
+
+					if (value === 'image') {
+						return (
+							<picture key={key} className={getElementClasses('picture')}>
+								{!!id[key] && (
+									<img className={`${defaultClassName}__image`} src={url[key]} alt={alt} />
+								)}
+							</picture>
+						);
+					}
+
+					return (
+						<video
+							key={key}
+							className={getElementClasses('video')}
+							type={`video/${subtype[key]}`}
+							autoPlay
+							loop
+							muted
+						>
+							<source src={url[key]} />
+						</video>
+					);
+				})}
 				<InlineStyles {...{ defaultClassName, attributes }} />
-			</picture>
+			</div>
 		</>
 	);
 }

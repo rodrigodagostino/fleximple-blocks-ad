@@ -10,7 +10,14 @@ $default-class-name: "fleximple-blocks-ad";
 		display: none;
 	}
 
-	&__image {
+	&__picture {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	&__image,
+	&__video {
 		max-width: 100%;
 	}
 
