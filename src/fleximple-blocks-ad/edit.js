@@ -31,7 +31,7 @@ const ALLOWED_MEDIA_TYPES = ['image', 'video'];
 
 export default function AdEdit({
 	attributes,
-	attributes: { blockId, id, type, subtype, url, size, width, alt, linkUrl, linkTarget },
+	attributes: { blockId, id, type, subtype, url, size, width, alt, linkUrl, linkTarget, linkLabel },
 	setAttributes,
 	clientId,
 }) {
@@ -354,6 +354,13 @@ export default function AdEdit({
 							]}
 							onChange={(value) => setAttributes({ linkTarget: value })}
 							disabled={!linkUrl}
+						/>
+
+						<TextControl
+							label={__('Link label', 'fleximple-blocks-ad')}
+							value={linkLabel}
+							placeholder={__('Type the link label…', 'fleximple-blocks-ad')}
+							onChange={(value) => setAttributes({ linkLabel: value })}
 						/>
 					</>
 				</PanelBody>

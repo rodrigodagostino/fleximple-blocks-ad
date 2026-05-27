@@ -75,6 +75,13 @@
 			"selector": "figure > a",
 			"attribute": "target",
 			"default": "_blank"
+		},
+		"linkLabel": {
+			"type": "string",
+			"source": "attribute",
+			"selector": "a",
+			"attribute": "aria-label",
+			"default": ""
 		}
 	},
 	"supports": {

@@ -8,7 +8,7 @@ const { name } = metadata;
 
 function AdSave({
 	attributes,
-	attributes: { blockId, id, type, subtype, url, alt, linkUrl, linkTarget },
+	attributes: { blockId, id, type, subtype, url, alt, linkUrl, linkTarget, linkLabel },
 }) {
 	const defaultClassName = getBlockDefaultClassName(name);
 
@@ -20,7 +20,7 @@ function AdSave({
 					href={linkUrl}
 					target={linkTarget}
 					rel="noopener"
-					aria-label={alt}
+					aria-label={linkLabel}
 				></a>
 			)}
 			{Object.entries(type).map(([key, value], index) => {
