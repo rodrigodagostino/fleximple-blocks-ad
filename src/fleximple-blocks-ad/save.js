@@ -14,13 +14,15 @@ function AdSave({
 
 	return (
 		<div className={defaultClassName} {...useBlockProps.save()} data-block-id={blockId}>
-			<a
-				className={`${defaultClassName}__link`}
-				href={linkUrl}
-				target={linkTarget}
-				rel="noopener"
-				aria-label={alt}
-			></a>
+			{linkUrl && (
+				<a
+					className={`${defaultClassName}__link`}
+					href={linkUrl}
+					target={linkTarget}
+					rel="noopener"
+					aria-label={alt}
+				></a>
+			)}
 			{Object.entries(type).map(([key, value], index) => {
 				if (!value) return null;
 
