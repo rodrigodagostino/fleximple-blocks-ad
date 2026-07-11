@@ -31,7 +31,21 @@ const ALLOWED_MEDIA_TYPES = ['image', 'video'];
 
 export default function AdEdit({
 	attributes,
-	attributes: { blockId, id, type, subtype, url, size, width, alt, linkUrl, linkTarget, linkLabel },
+	attributes: {
+		blockId,
+		id,
+		type,
+		subtype,
+		url,
+		size,
+		widthMode,
+		width,
+		height,
+		alt,
+		linkUrl,
+		linkTarget,
+		linkLabel,
+	},
 	setAttributes,
 	clientId,
 }) {
@@ -113,6 +127,20 @@ export default function AdEdit({
 									'small',
 									media.sizes[size.small].url
 								);
+								setResponsiveAttribute(
+									attributes,
+									setAttributes,
+									'width',
+									'small',
+									media.sizes[size.small].width
+								);
+								setResponsiveAttribute(
+									attributes,
+									setAttributes,
+									'height',
+									'small',
+									media.sizes[size.small].height
+								);
 								setAttributes({ alt: media.alt });
 							}}
 							allowedTypes={ALLOWED_MEDIA_TYPES}
@@ -183,6 +211,20 @@ export default function AdEdit({
 														tab.name,
 														mediaUrl
 													);
+													setResponsiveAttribute(
+														attributes,
+														setAttributes,
+														'width',
+														tab.name,
+														media.width
+													);
+													setResponsiveAttribute(
+														attributes,
+														setAttributes,
+														'height',
+														tab.name,
+														media.height
+													);
 													setAttributes({ alt: media.alt });
 													setMediaData({
 														...mediaData,
@@ -199,6 +241,8 @@ export default function AdEdit({
 																	<img
 																		src={url[tab.name]}
 																		style={{ verticalAlign: 'middle' }}
+																		width={width[tab.name]}
+																		height={height[tab.name]}
 																		alt={__('Replace media', 'fleximple-blocks-ad')}
 																	/>
 																)}
@@ -206,10 +250,12 @@ export default function AdEdit({
 																	<video
 																		src={url[tab.name]}
 																		type={`video/${subtype[tab.name]}`}
+																		style={{ verticalAlign: 'middle' }}
+																		width={width[tab.name]}
+																		height={height[tab.name]}
 																		autoPlay
 																		loop
 																		muted
-																		style={{ verticalAlign: 'middle' }}
 																	/>
 																)}
 															</Button>
@@ -277,7 +323,7 @@ export default function AdEdit({
 									{!!id[tab.name] && mediaData && (
 										<SelectControl
 											label={__('Width', 'fleximple-blocks-ad')}
-											value={width[tab.name]}
+											value={widthMode[tab.name]}
 											options={[
 												{
 													label: __('Auto', 'fleximple-blocks-ad'),
@@ -392,7 +438,13 @@ export default function AdEdit({
 						return (
 							<picture key={key} className={getElementClasses('picture')}>
 								{!!id[key] && (
-									<img className={`${defaultClassName}__image`} src={url[key]} alt={alt} />
+									<img
+										className={`${defaultClassName}__image`}
+										src={url[key]}
+										width={width[key]}
+										height={height[key]}
+										alt={alt}
+									/>
 								)}
 							</picture>
 						);
@@ -403,6 +455,8 @@ export default function AdEdit({
 							key={key}
 							className={getElementClasses('video')}
 							type={`video/${subtype[key]}`}
+							width={width[key]}
+							height={height[key]}
 							autoPlay
 							loop
 							muted

@@ -8,7 +8,19 @@ const { name } = metadata;
 
 function AdSave({
 	attributes,
-	attributes: { blockId, id, type, subtype, url, alt, linkUrl, linkTarget, linkLabel },
+	attributes: {
+		blockId,
+		id,
+		type,
+		subtype,
+		url,
+		width,
+		height,
+		alt,
+		linkUrl,
+		linkTarget,
+		linkLabel,
+	},
 }) {
 	const defaultClassName = getBlockDefaultClassName(name);
 
@@ -49,7 +61,13 @@ function AdSave({
 							return (
 								<picture key={key} className={getElementClasses('picture')}>
 									{!!id[key] && (
-										<img className={`${defaultClassName}__image`} src={url[key]} alt={alt} />
+										<img
+											className={`${defaultClassName}__image`}
+											src={url[key]}
+											width={width[key]}
+											height={height[key]}
+											alt={alt}
+										/>
 									)}
 								</picture>
 							);
@@ -60,6 +78,8 @@ function AdSave({
 								key={key}
 								className={getElementClasses('video')}
 								type={`video/${subtype[key]}`}
+								width={width[key]}
+								height={height[key]}
 								autoPlay
 								loop
 								muted

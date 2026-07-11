@@ -51,12 +51,28 @@
 				"large": "full"
 			}
 		},
-		"width": {
+		"widthMode": {
 			"type": "object",
 			"default": {
 				"small": "full",
 				"medium": "full",
 				"large": "full"
+			}
+		},
+		"width": {
+			"type": "object",
+			"default": {
+				"small": 0,
+				"medium": 0,
+				"large": 0
+			}
+		},
+		"height": {
+			"type": "object",
+			"default": {
+				"small": 0,
+				"medium": 0,
+				"large": 0
 			}
 		},
 		"alt": {

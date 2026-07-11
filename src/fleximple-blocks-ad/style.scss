@@ -19,6 +19,7 @@ $default-class-name: "fleximple-blocks-ad";
 	&__image,
 	&__video {
 		max-width: 100%;
+		height: auto;
 	}
 
 	&__link {
